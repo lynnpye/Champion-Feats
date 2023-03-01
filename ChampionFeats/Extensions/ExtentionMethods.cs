@@ -148,9 +148,8 @@ namespace ChampionFeats.Extensions {
 
         public static void RemoveFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features) {
             foreach (var feature in features) {
-                var featureReference = feature;
-                if (selection.m_AllFeatures.Contains(featureReference)) {
-                    selection.m_AllFeatures = selection.m_AllFeatures.Where(f => !f.Equals(featureReference)).ToArray();
+                if (selection.m_AllFeatures.Contains(feature)) {
+                    selection.m_AllFeatures = selection.m_AllFeatures.Where(f => !f.Equals(feature)).ToArray();
                 }
             }
             selection.m_AllFeatures = selection.m_AllFeatures.OrderBy(feature => feature.Get().Name).ToArray();
@@ -168,25 +167,25 @@ namespace ChampionFeats.Extensions {
 
         public static void AddFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features)
         {
-            selection.AddFeatures(features.Select((BlueprintFeature f) => f.ToReference<BlueprintFeatureReference>()).ToArray());
-        }
+            var allFeaturesList = selection.m_AllFeatures.ToList();
+            var featuresList = selection.m_Features.ToList();
 
-        public static void AddFeatures(this BlueprintFeatureSelection selection, params BlueprintFeatureReference[] features)
-        {
             foreach (BlueprintFeature value in features)
             {
                 if (!selection.m_AllFeatures.Contains(value))
                 {
-                    selection.m_AllFeatures = selection.m_AllFeatures.AppendToArray(features);
+                    allFeaturesList.Add(value.ToReference<BlueprintFeatureReference>());
                 }
 
                 if (!selection.m_Features.Contains(value))
                 {
-                    selection.m_Features = selection.m_Features.AppendToArray(features);
+                    featuresList.Add(value.ToReference<BlueprintFeatureReference>());
                 }
             }
+            selection.m_AllFeatures = allFeaturesList.ToArray();
+            selection.m_Features = featuresList.ToArray();
 
-            selection.m_AllFeatures = selection.m_AllFeatures.OrderBy(delegate (BlueprintFeatureReference feature)
+            selection.m_AllFeatures = selection.m_AllFeatures.OrderBy((BlueprintFeatureReference feature) =>
             {
                 object obj2 = feature?.Get()?.Name;
                 if (obj2 == null)
@@ -207,7 +206,7 @@ namespace ChampionFeats.Extensions {
 
                 return (string)obj2;
             }).ToArray();
-            selection.m_Features = selection.m_Features.OrderBy(delegate (BlueprintFeatureReference feature)
+            selection.m_Features = selection.m_Features.OrderBy((BlueprintFeatureReference feature) =>
             {
                 object obj = feature?.Get()?.Name;
                 if (obj == null)
