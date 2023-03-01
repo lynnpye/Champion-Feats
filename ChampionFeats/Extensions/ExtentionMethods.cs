@@ -148,7 +148,7 @@ namespace ChampionFeats.Extensions {
 
         public static void RemoveFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features) {
             foreach (var feature in features) {
-                var featureReference = feature.ToReference<BlueprintFeatureReference>();
+                var featureReference = feature;
                 if (selection.m_AllFeatures.Contains(featureReference)) {
                     selection.m_AllFeatures = selection.m_AllFeatures.Where(f => !f.Equals(featureReference)).ToArray();
                 }
@@ -173,16 +173,16 @@ namespace ChampionFeats.Extensions {
 
         public static void AddFeatures(this BlueprintFeatureSelection selection, params BlueprintFeatureReference[] features)
         {
-            foreach (BlueprintFeatureReference value in features)
+            foreach (BlueprintFeature value in features)
             {
                 if (!selection.m_AllFeatures.Contains(value))
                 {
-                    selection.m_AllFeatures = selection.m_AllFeatures.AppendToArray(value);
+                    selection.m_AllFeatures = selection.m_AllFeatures.AppendToArray(features);
                 }
 
                 if (!selection.m_Features.Contains(value))
                 {
-                    selection.m_Features = selection.m_Features.AppendToArray(value);
+                    selection.m_Features = selection.m_Features.AppendToArray(features);
                 }
             }
 
